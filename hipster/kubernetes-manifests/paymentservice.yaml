@@ -43,7 +43,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: paymentservice
+        image: gcr.io/google-samples/microservices-demo/paymentservice:v0.8.0
         ports:
         - containerPort: 50051
         env:
@@ -51,12 +51,6 @@ spec:
           value: "50051"
         - name: DISABLE_PROFILER
           value: "1"
-        readinessProbe:
-          grpc:
-            port: 50051
-        livenessProbe:
-          grpc:
-            port: 50051
         resources:
           requests:
             cpu: 100m
