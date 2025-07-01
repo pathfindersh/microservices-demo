@@ -1,4 +1,4 @@
-name: Build & Push AdService ## Building image and pushing in docker
+name: Build & Push Docker images ## Building image and pushing in docker
 
 on:
   workflow_dispatch:
