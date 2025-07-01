@@ -1,4 +1,4 @@
-name: Update K8s Image Tag
+name: Update run config
 
 on:
   workflow_dispatch:
