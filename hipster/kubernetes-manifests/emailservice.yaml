@@ -43,7 +43,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: gcr.io/google-samples/microservices-demo/emailservice:v0.8.0
+        image: pathfindersh/hipster-app:emailservice-v0.8.0
         ports:
         - containerPort: 8080
         env:
