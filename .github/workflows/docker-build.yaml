@@ -26,7 +26,5 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          pwd
-          ls -R
-          docker build -t pathfindersh/hipster-app:${{ github.event.inputs.image_tag }} .hipster/src/adservice
-          docker push pathfindersh/hipster-app:${{ github.event.inputs.image_tag }}
+          docker build -t pathfindersh/hipster-app:${{ github.event.inputs.NEW_IMAGE_TAG }} ./hipster/src/adservice
+          docker push pathfindersh/hipster-app:${{ github.event.inputs.NEW_IMAGE_TAG }}
