@@ -27,6 +27,8 @@ spec:
       labels:
         app: cartservice
     spec:
+      imagePullSecrets:
+        - name: regcred
       serviceAccountName: cartservice
       terminationGracePeriodSeconds: 5
       securityContext:
@@ -43,7 +45,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: docker.io/pathfindersh/hipster-app:cartservice-v0.8.0
+        image: pathfindersh/hipster-app:cartservice-v0.8.0
         ports:
         - containerPort: 7070
         env:

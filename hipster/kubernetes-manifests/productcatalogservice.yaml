@@ -27,6 +27,8 @@ spec:
       labels:
         app: productcatalogservice
     spec:
+      imagePullSecrets:
+        - name: regcred
       serviceAccountName: productcatalogservice
       terminationGracePeriodSeconds: 5
       securityContext:
@@ -43,7 +45,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: docker.io/pathfindersh/hipster-app:productcatalogservice-v0.8.0
+        image: pathfindersh/hipster-app:productcatalogservice-v0.8.0
         ports:
         - containerPort: 3550
         env:

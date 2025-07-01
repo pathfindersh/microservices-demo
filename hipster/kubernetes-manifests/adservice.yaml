@@ -28,6 +28,8 @@ spec:
       labels:
         app: adservice
     spec:
+      imagePullSecrets:
+        - name: regcred
       serviceAccountName: adservice
       terminationGracePeriodSeconds: 5
       securityContext:
@@ -44,7 +46,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: docker.io/pathfindersh/hipster-app:adservice-v0.8.0
+        image: pathfindersh/hipster-app:adservice-v0.8.0
         ports:
         - containerPort: 9555
         env:

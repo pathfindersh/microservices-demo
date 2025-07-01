@@ -27,6 +27,8 @@ spec:
       labels:
         app: currencyservice
     spec:
+      imagePullSecrets:
+        - name: regcred
       serviceAccountName: currencyservice
       terminationGracePeriodSeconds: 5
       securityContext:
@@ -43,7 +45,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: docker.io/pathfindersh/hipster-app:currencyservice-v0.8.0
+        image: pathfindersh/hipster-app:currencyservice-v0.8.0
         ports:
         - name: grpc
           containerPort: 7000

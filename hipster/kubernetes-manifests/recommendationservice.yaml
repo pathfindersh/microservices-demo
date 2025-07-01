@@ -27,6 +27,8 @@ spec:
       labels:
         app: recommendationservice
     spec:
+      imagePullSecrets:
+        - name: regcred
       serviceAccountName: recommendationservice
       terminationGracePeriodSeconds: 5
       securityContext:
@@ -43,7 +45,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: docker.io/pathfindersh/hipster-app:recommendationservice-v0.8.0
+        image: pathfindersh/hipster-app:recommendationservice-v0.8.0
         ports:
         - containerPort: 8080
         env:

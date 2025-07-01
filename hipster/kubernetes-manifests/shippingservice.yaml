@@ -27,6 +27,8 @@ spec:
       labels:
         app: shippingservice
     spec:
+      imagePullSecrets:
+        - name: regcred
       serviceAccountName: shippingservice
       securityContext:
         fsGroup: 1000
@@ -42,7 +44,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: docker.io/pathfindersh/hipster-app:shippingservice-v0.8.0
+        image: pathfindersh/hipster-app:shippingservice-v0.8.0
         ports:
         - containerPort: 50051
         env:

@@ -29,6 +29,8 @@ spec:
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
     spec:
+      imagePullSecrets:
+        - name: regcred
       serviceAccountName: frontend
       securityContext:
         fsGroup: 1000
@@ -44,7 +46,7 @@ spec:
                 - ALL
             privileged: false
             readOnlyRootFilesystem: true
-          image: docker.io/pathfindersh/hipster-app:frontend-v0.8.0
+          image: pathfindersh/hipster-app:frontend-v0.8.0
           ports:
           - containerPort: 8080
           readinessProbe:

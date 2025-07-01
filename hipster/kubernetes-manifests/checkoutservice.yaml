@@ -27,6 +27,8 @@ spec:
       labels:
         app: checkoutservice
     spec:
+      imagePullSecrets:
+        - name: regcred
       serviceAccountName: checkoutservice
       securityContext:
         fsGroup: 1000
@@ -42,7 +44,7 @@ spec:
                 - ALL
             privileged: false
             readOnlyRootFilesystem: true
-          image: docker.io/pathfindersh/hipster-app:checkoutservice-v0.8.0
+          image: pathfindersh/hipster-app:checkoutservice-v0.8.0
           ports:
           - containerPort: 5050
           readinessProbe:
