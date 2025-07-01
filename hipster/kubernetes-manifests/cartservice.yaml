@@ -43,7 +43,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: pathfindersh/hipster-app:cartservice-v0.8.0
+        image: docker.io/pathfindersh/hipster-app:cartservice-v0.8.0
         ports:
         - containerPort: 7070
         env:

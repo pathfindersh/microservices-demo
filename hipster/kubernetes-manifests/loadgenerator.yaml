@@ -77,7 +77,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: pathfindersh/hipster-app:loadgenerator-v0.8.0
+        image: docker.io/pathfindersh/hipster-app:loadgenerator-v0.8.0
         env:
         - name: FRONTEND_ADDR
           value: "frontend:80"
