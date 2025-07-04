@@ -70,7 +70,7 @@ spec:
                 - ALL
             privileged: false
             readOnlyRootFilesystem: true
-          image: {{ .Values.images.repository }}/{{ .Values.adService.name }}:{{ .Values.adService.tag }}
+          image: "{{ .Values.images.repository }}/{{ .Values.adService.name }}:{{ .Values.images.adserviceTag }}"
           ports:
           - containerPort: 8080
           readinessProbe:

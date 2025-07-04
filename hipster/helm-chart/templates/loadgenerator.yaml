@@ -106,7 +106,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: {{ .Values.images.repository }}/{{ .Values.adService.name }}:{{ .Values.adService.tag }}
+        image: "{{ .Values.images.repository }}/{{ .Values.adService.name }}:{{ .Values.images.adserviceTag }}"
         env:
         - name: FRONTEND_ADDR
           value: "{{ .Values.frontend.name }}:80"
