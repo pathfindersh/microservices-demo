@@ -46,6 +46,8 @@ spec:
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
     spec:
+      imagePullSecrets:
+       - name: regcred
       {{- if .Values.serviceAccounts.create }}
       serviceAccountName: {{ .Values.loadGenerator.name }}
       {{- else }}
@@ -106,7 +108,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: "{{ .Values.images.repository }}/{{ .Values.adService.name }}:{{ .Values.images.adserviceTag }}"
+        image: {{ .Values.loadGenerator.image.repository }}:{{ .Values.loadGenerator.image.tag }}
         env:
         - name: FRONTEND_ADDR
           value: "{{ .Values.frontend.name }}:80"

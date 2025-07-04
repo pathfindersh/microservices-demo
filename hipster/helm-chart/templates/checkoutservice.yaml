@@ -43,6 +43,8 @@ spec:
       labels:
         app: {{ .Values.checkoutService.name }}
     spec:
+      imagePullSecrets:
+       - name: regcred
       {{- if .Values.serviceAccounts.create }}
       serviceAccountName: {{ .Values.checkoutService.name }}
       {{- else }}
@@ -68,7 +70,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: "{{ .Values.images.repository }}/{{ .Values.adService.name }}:{{ .Values.images.adserviceTag }}"
+        image: {{ .Values.checkoutService.image.repository }}:{{ .Values.checkoutService.image.tag }}
         ports:
         - containerPort: 5050
         readinessProbe:

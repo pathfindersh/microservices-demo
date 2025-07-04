@@ -33,11 +33,14 @@ seccompProfile:
 securityContext:
   enable: true
 
+imagePullSecret:
+  dockerconfigjson: "eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJwYXRoZmluZGVyc2giLCJwYXNzd29yZCI6IlBhdGhARG9ja2VyIzEyMyIsImVtYWlsIjoiZGV2c2h1MkBnbWFpbC5jb20iLCJhdXRoIjoiY0dGMGFHWnBibVJsY25Ob09sQmhkR2hBUkc5amEyVnlJekV5TXc9PSJ9fX0="
+
 adService:
   create: true
   name: adservice
   image:
-    repository: pathfindersh/hipster-app
+    repository: docker.io/pathfindersh/hipster-app
     tag: adservice-v0.8.0
   resources:
     requests:
@@ -51,7 +54,7 @@ cartService:
   create: true
   name: cartservice
   image:
-    repository: pathfindersh/hipster-app
+    repository: docker.io/pathfindersh/hipster-app
     tag: cartservice-v0.8.0
   resources:
     requests:
@@ -65,7 +68,7 @@ checkoutService:
   create: true
   name: checkoutservice
   image:
-    repository: pathfindersh/hipster-app
+    repository: docker.io/pathfindersh/hipster-app
     tag: checkoutservice-v0.8.0
   resources:
     requests:
@@ -79,7 +82,7 @@ currencyService:
   create: true
   name: currencyservice
   image:
-    repository: pathfindersh/hipster-app
+    repository: docker.io/pathfindersh/hipster-app
     tag: currencyservice-v0.8.0
   resources:
     requests:
@@ -90,10 +93,10 @@ currencyService:
       memory: 256Mi
 
 emailService:
-  create: true
+  create: trueͥ旡ɍ
   name: emailservice
   image:
-    repository: pathfindersh/hipster-app
+    repository: docker.io/pathfindersh/hipster-app
     tag: emailservice-v0.8.0
   resources:
     requests:
@@ -107,7 +110,7 @@ frontend:
   create: true
   name: frontend
   image:
-    repository: pathfindersh/hipster-app
+    repository: docker.io/pathfindersh/hipster-app
     tag: frontend-v0.8.0
   externalService: true
   cymbalBranding: false
@@ -134,7 +137,7 @@ loadGenerator:
   create: true
   name: loadgenerator
   image:
-    repository: pathfindersh/hipster-app
+    repository: docker.io/pathfindersh/hipster-app
     tag: loadgenerator-v0.8.0
   checkFrontendInitContainer: true
   resources:
@@ -149,7 +152,7 @@ paymentService:
   create: true
   name: paymentservice
   image:
-    repository: pathfindersh/hipster-app
+    repository: docker.io/pathfindersh/hipster-app
     tag: paymentservice-v0.8.0
   resources:
     requests:
@@ -163,7 +166,7 @@ productCatalogService:
   create: true
   name: productcatalogservice
   image:
-    repository: pathfindersh/hipster-app
+    repository: docker.io/pathfindersh/hipster-app
     tag: productcatalogservice-v0.8.0
   extraLatency: ""
   resources:
@@ -178,7 +181,7 @@ recommendationService:
   create: true
   name: recommendationservice
   image:
-    repository: pathfindersh/hipster-app
+    repository: docker.io/pathfindersh/hipster-app
     tag: recommendationservice-v0.8.0
   resources:
     requests:
@@ -192,7 +195,7 @@ shippingService:
   create: true
   name: shippingservice
   image:
-    repository: pathfindersh/hipster-app
+    repository: docker.io/pathfindersh/hipster-app
     tag: shippingservice-v0.8.0
   resources:
     requests:

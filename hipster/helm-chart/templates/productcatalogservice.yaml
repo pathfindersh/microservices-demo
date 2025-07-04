@@ -43,6 +43,8 @@ spec:
       labels:
         app: {{ .Values.productCatalogService.name }}
     spec:
+      imagePullSecrets:
+       - name: regcred
       {{- if .Values.serviceAccounts.create }}
       serviceAccountName: {{ .Values.productCatalogService.name }}
       {{- else }}
@@ -69,7 +71,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: "{{ .Values.images.repository }}/{{ .Values.adService.name }}:{{ .Values.images.adserviceTag }}"
+        image: {{ .Values.productCatalogService.image.repository }}:{{ .Values.productCatalogService.image.tag }}
         ports:
         - containerPort: 3550
         env:

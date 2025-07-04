@@ -43,6 +43,8 @@ spec:
       labels:
         app: {{ .Values.paymentService.name }}
     spec:
+      imagePullSecrets:
+       - name: regcred
       {{- if .Values.serviceAccounts.create }}
       serviceAccountName: {{ .Values.paymentService.name }}
       {{- else }}
@@ -69,7 +71,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: "{{ .Values.images.repository }}/{{ .Values.adService.name }}:{{ .Values.images.adserviceTag }}"
+        image: {{ .Values.paymentService.image.repository }}:{{ .Values.paymentService.image.tag }}
         ports:
         - containerPort: 50051
         env:
@@ -90,9 +92,17 @@ spec:
           value: "1"
         {{- end }}
         readinessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 10
           grpc:
             port: 50051
         livenessProbe:
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 3
+          failureThreshold: 10
           grpc:
             port: 50051
         resources:

@@ -43,6 +43,8 @@ spec:
       labels:
         app: {{ .Values.currencyService.name }}
     spec:
+      imagePullSecrets:
+       - name: regcred
       {{- if .Values.serviceAccounts.create }}
       serviceAccountName: {{ .Values.currencyService.name }}
       {{- else }}
@@ -69,7 +71,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: "{{ .Values.images.repository }}/{{ .Values.adService.name }}:{{ .Values.images.adserviceTag }}"
+        image: {{ .Values.currencyService.image.repository }}:{{ .Values.currencyService.image.tag }}
         ports:
         - name: grpc
           containerPort: 7000
@@ -91,11 +93,20 @@ spec:
           value: "1"
         {{- end }}
         readinessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 10
           grpc:
             port: 7000
         livenessProbe:
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 3
+          failureThreshold: 10
           grpc:
             port: 7000
+
         resources:
           {{- toYaml .Values.currencyService.resources | nindent 10 }}
 ---

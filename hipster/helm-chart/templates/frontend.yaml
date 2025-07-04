@@ -45,6 +45,8 @@ spec:
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
     spec:
+      imagePullSecrets:
+       - name: regcred
       {{- if .Values.serviceAccounts.create }}
       serviceAccountName: {{ .Values.frontend.name }}
       {{- else }}
@@ -70,7 +72,7 @@ spec:
                 - ALL
             privileged: false
             readOnlyRootFilesystem: true
-          image: "{{ .Values.images.repository }}/{{ .Values.adService.name }}:{{ .Values.images.adserviceTag }}"
+          image: {{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}
           ports:
           - containerPort: 8080
           readinessProbe:
