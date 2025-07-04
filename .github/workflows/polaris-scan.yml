@@ -28,7 +28,7 @@ jobs:
           echo "🔍 Running Polaris scan on Helm manifests..."
           docker run --rm \
             -v "${{ github.workspace }}/hipster/helm-chart/templates:/manifests" \
-            quay.io/fairwinds/polaris:latest \
+            quay.io/fairwinds/polaris:9.6 \
             /polaris audit --audit-path /manifests \
             --format pretty
 
