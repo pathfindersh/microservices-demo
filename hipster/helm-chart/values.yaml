@@ -41,7 +41,7 @@ adService:
   name: adservice
   image:
     repository: docker.io/pathfindersh/hipster-app
-    tag: adservice-v0.9.0
+    tag: adservice-v0.8.0
   resources:
     requests:
       cpu: 200m
