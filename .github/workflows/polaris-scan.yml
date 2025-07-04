@@ -1,0 +1,32 @@
+name: Polaris Scan
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'hipster/helm-chart/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'hipster/helm-chart/**'
+
+jobs:
+  polaris-scan:
+    runs-on: ubuntu-latest
+    name: "Run Polaris Scan"
+    steps:
+      - name: Checkout using Personal Access Token
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Run Polaris Scan
+        uses: FairwindsOps/polaris-action@v3
+        with:
+          config: "https://raw.githubusercontent.com/FairwindsOps/polaris/master/examples/config.yaml"
+          audit-output-format: pretty
+          path: hipster/helm-chart/templates
+          fail-on-critical: true
