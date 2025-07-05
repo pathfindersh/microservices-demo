@@ -1,4 +1,4 @@
-name: Polaris Scan
+name: Polaris Scan on helm Manifests
 
 on:
   workflow_dispatch:
@@ -24,7 +24,7 @@ jobs:
           token: ${{ secrets.GH_PAT }}
 
       - name: Install Helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v4
 
       - name: Debug Chart Path
         run: ls -R ./hipster/helm-chart
@@ -43,5 +43,11 @@ jobs:
             polaris audit --audit-path /manifests \
             --format pretty \
             --set-exit-code-on-danger
+
+      - name: Upload Polaris Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: polaris-scan-results
+          path: rendered/all.yaml
 
 
