@@ -23,11 +23,16 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT }}
 
-      - name: Run Polaris via Docker
+      - name: Render Helm chart
         run: |
-          echo "🔍 Running Polaris scan using Docker..."
+          mkdir rendered
+          helm template hipster-shop ./hipster/helm-chart --namespace hipster > rendered/all.yaml
+    
+      - name: Run Polaris scan on rendered output
+        run: |
+          echo "🔍 Running Polaris scan on rendered YAMLs..."
           docker run --rm \
-            -v "${{ github.workspace }}/hipster/helm-chart/templates:/manifests" \
+            -v "${{ github.workspace }}/rendered:/manifests" \
             quay.io/fairwinds/polaris:latest \
             polaris audit --audit-path /manifests --format pretty
 
