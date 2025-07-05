@@ -23,9 +23,15 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT }}
 
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      - name: Debug Chart Path
+        run: ls -R ./hipster/helm-chart
+
       - name: Render Helm chart
         run: |
-          mkdir rendered
+          mkdir -p rendered
           helm template hipster-shop ./hipster/helm-chart --namespace hipster > rendered/all.yaml
     
       - name: Run Polaris scan on rendered output
