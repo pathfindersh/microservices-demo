@@ -1,17 +1,14 @@
-  name: Unit test of adservice 
+  name: Unit test of services 
   on:
-    workflow_dispatch:  # 👈 Manual button
-    push:
-      branches: [main]
-      paths:
-        - 'src/adservice/**'
-    pull_request:
-      branches: [main]
-      paths:
-        - 'src/adservice/**'
+    workflow_call:
+      inputs:
+        service:
+          required: true
+          type: string
+
   jobs:
     unit-tests:
-      name: Run Unit Tests for Adservice
+      name: Running Unit Tests
       runs-on: ubuntu-latest
 
       steps:
@@ -33,11 +30,12 @@
         # ✅ This ignores test failure, so pipeline continues
         - name: Run Tests (Continue on Failure)
           run: ./gradlew test || true
-
+          working-directory: src/${{ inputs.service }}
+          
         - name: Upload Test Results
           if: always()
           uses: actions/upload-artifact@v4
           with:
             name: adservice-test-results
-            path: src/adservice/build/test-results/
+            path: src/${{ inputs.service }}/build/test-results/
 

@@ -1,11 +1,11 @@
 name: Build & Push All Services
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
-      IMAGE_VERSION:
-        description: 'Image version (e.g. v0.8.0)'
+      image_version:
         required: true
+        type: string
 
 jobs:
   build-and-push:
@@ -41,7 +41,7 @@ jobs:
               CONTEXT="$BASE_PATH/$service"
             fi
 
-            IMAGE_TAG="${DOCKER_NAMESPACE}/hipster-app:${service}-${{ github.event.inputs.IMAGE_VERSION }}"
+            IMAGE_TAG="${DOCKER_NAMESPACE}/hipster-app:${service}-${{ inputs.image_version }}"
 
             echo "🏗️ Building $IMAGE_TAG from $DOCKERFILE"
             docker build -t $IMAGE_TAG -f $DOCKERFILE $CONTEXT

@@ -1,13 +1,13 @@
 name: Github workflow with ArgoCD . ## This workflow updates the image tag in Kubernetes manifests and pushes changes to the repository.
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       service:
-        description: 'Service Name (e.g. adservice)'
         required: true
+        type: string
       image_tag:
-        description: 'New Image Tag (e.g. v0.8.0)'
         required: true
+        type: string
 jobs:
   update-manifest-files:
     runs-on: ubuntu-latest
@@ -20,13 +20,13 @@ jobs:
         token: ${{ secrets.GH_PAT }}  # 🔥 This is critical!
     - name: Update Image Tag
       run: |
-        file="hipster/kubernetes-manifests/${{ github.event.inputs.service }}.yaml"
+        file="hipster/helm-chart/values.yaml"
         if [ ! -f "$file" ]; then
           echo "❌ File not found: $file"
           exit 1
         fi
-        echo "🔄 Updating $file..."
-        sed -i "s|\(image: .*${{ github.event.inputs.service }}:\).*|\1${{ github.event.inputs.image_tag }}|" "$file"
+        echo "🔄 Updating $file for ${{ inputs.service }}..."
+        sed -i "s|\(.*${{ inputs.service }}.*tag:\).*|\1 \"${{ inputs.image_tag }}\"|" "$file"
         echo "✅ Updated image tag in $file"
     - name: Commit and Push Changes
       run: |
