@@ -1,4 +1,4 @@
-name: CI/CD Orchestration Pipeline
+name: CI/CD Orchestration Pipeline with reusable Workflows
 
 on:
   workflow_dispatch:
