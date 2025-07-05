@@ -13,9 +13,7 @@
     unit-tests:
       name: Run Unit Tests for Adservice
       runs-on: ubuntu-latest
-      defaults:
-        run:
-          working-directory: src/adservice
+
       steps:
         - name: Checkout using Personal Access Token
           uses: actions/checkout@v4
