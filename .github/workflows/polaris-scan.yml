@@ -40,6 +40,8 @@ jobs:
           docker run --rm \
             -v "${{ github.workspace }}/rendered:/manifests" \
             quay.io/fairwinds/polaris:latest \
-            polaris audit --audit-path /manifests --format pretty
+            polaris audit --audit-path /manifests \
+            --format pretty \
+            --set-exit-code-on-danger
 
 
