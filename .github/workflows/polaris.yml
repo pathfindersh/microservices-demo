@@ -2,16 +2,10 @@ name: Polaris Scan on helm Manifests
 
 on:
   workflow_call:
-  push:
-    branches:
-      - main
-    paths:
-      - 'hipster/helm-chart/**'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'hipster/helm-chart/**'
+    inputs:
+      gh_pat:
+        required: true
+        type: string
 
 jobs:
   polaris-scan:
@@ -21,7 +15,7 @@ jobs:
       - name: Checkout using Personal Access Token
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GH_PAT }}
+          token: ${{ inputs.gh_pat }}
 
       - name: Install Helm
         uses: azure/setup-helm@v4

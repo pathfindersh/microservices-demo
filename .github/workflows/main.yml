@@ -13,7 +13,9 @@ on:
 jobs:
 
   polaris_scan:
-    uses: ./.github/workflows/polaris.yml
+  uses: ./.github/workflows/polaris.yml
+  with:
+    gh_pat: ${{ secrets.GH_PAT }}
 
   unit_tests:
     needs: polaris_scan
