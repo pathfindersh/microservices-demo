@@ -23,12 +23,12 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT }}
 
-      - name: Run Polaris Scan via Docker (v4.0.5 - stable)
+      - name: Run Polaris via Docker (v7.0.0)
         run: |
-          echo "🔍 Running Polaris scan on Helm manifests..."
+          echo "🔍 Running Polaris scan using Docker..."
           docker run --rm \
             -v "${{ github.workspace }}/hipster/helm-chart/templates:/manifests" \
-            quay.io/fairwinds/polaris:v4.0.5 \
+            quay.io/fairwinds/polaris:v7.0.0 \
             polaris audit --audit-path /manifests --format pretty
 
 
