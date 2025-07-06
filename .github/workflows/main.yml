@@ -40,10 +40,11 @@ jobs:
     secrets:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-  argocd_deploy:
+  argocd_deploy_without_build:
     if: ${{ inputs.skip_build == 'true' && inputs.skip_deploy != 'true' }}
-    needs:  build_and_push
     uses: ./.github/workflows/argo-update.yml
     with:
-      service: ${{ github.event.inputs.service }}
-      image_tag: ${{ github.event.inputs.image_version }}
+      service: ${{ inputs.service }}
+      image_tag: ${{ inputs.image_version }}
+    secrets:
+      gh_pat: ${{ secrets.GH_PAT }}
