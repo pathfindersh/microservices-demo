@@ -9,6 +9,14 @@ on:
       image_version:
         description: 'Image tag (e.g. v0.8.0)'
         required: true
+      skip_build:
+        description: 'Skip Docker Build & push? (true/false)'
+        required: false
+        default: 'false'
+      skip_deploy:
+        description: 'Skip ArgoCD deploy? (true/false)'
+        required: false
+        default: 'false'
 
 jobs:
 
@@ -24,7 +32,7 @@ jobs:
       service: ${{ github.event.inputs.service }}
 
   build_and_push:
-    if: ${{ always() }}
+    if: ${{ inputs.skip_build != 'true' }}
     needs: unit_tests
     uses: ./.github/workflows/docker-build.yml
     with:
@@ -33,8 +41,8 @@ jobs:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   argocd_deploy:
-    if: ${{ always() }}
-    needs: build_and_push
+    if: ${{ inputs.skip_build == 'true' && inputs.skip_deploy != 'true' }}
+    needs:  build_and_push
     uses: ./.github/workflows/argo-update.yml
     with:
       service: ${{ github.event.inputs.service }}
