@@ -8,6 +8,9 @@ on:
       image_tag:
         required: true
         type: string
+    secrets:
+      gh_pat:
+        required: true
 jobs:
   update-manifest-files:
     runs-on: ubuntu-latest
