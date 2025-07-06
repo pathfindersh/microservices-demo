@@ -6,6 +6,10 @@ on:
       image_version:
         required: true
         type: string
+    secrets:
+      DOCKER_PASSWORD:
+        required: true
+
 
 jobs:
   build-and-push:

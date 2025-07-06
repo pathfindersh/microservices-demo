@@ -29,6 +29,8 @@ jobs:
     uses: ./.github/workflows/docker-build.yml
     with:
       image_version: ${{ github.event.inputs.image_version }}
+    secrets:
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   argocd_deploy:
     needs: build_and_push
