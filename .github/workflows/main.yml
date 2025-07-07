@@ -9,10 +9,8 @@ on:
       image_version:
         description: 'Image tag (e.g. v0.8.0)'
         required: true
-      
 
 jobs:
-
   polaris_scan:
     uses: ./.github/workflows/polaris.yml
     secrets:
@@ -25,20 +23,16 @@ jobs:
       service: ${{ github.event.inputs.service }}
 
   build_and_push:
-    if: ${{always()}}
     needs: unit_tests
     uses: ./.github/workflows/docker-build.yml
     with:
       image_version: ${{ github.event.inputs.image_version }}
+      service: ${{ github.event.inputs.service }}
     secrets:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-  argocd_deploy_without_build:
-    if: ${{always()}}
+  argocd_deploy:
     needs: build_and_push
     uses: ./.github/workflows/argo-update.yml
-    with:
-      service: ${{ inputs.service }}
-      image_tag: ${{ inputs.image_version }}
     secrets:
       gh_pat: ${{ secrets.GH_PAT }}

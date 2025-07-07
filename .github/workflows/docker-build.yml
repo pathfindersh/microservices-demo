@@ -6,6 +6,9 @@ on:
       image_version:
         required: true
         type: string
+      service:             
+        required: true
+        type: string
     secrets:
       DOCKER_PASSWORD:
         required: true
@@ -36,7 +39,6 @@ jobs:
         run: |
           for service in $(ls $BASE_PATH); do
             echo "🔧 Building $service"
-            # Special case for cartservice
             if [ "$service" = "cartservice" ]; then
               DOCKERFILE="$BASE_PATH/$service/src/Dockerfile"
               CONTEXT="$BASE_PATH/$service/src"
@@ -46,19 +48,18 @@ jobs:
             fi
 
             IMAGE_TAG="${DOCKER_NAMESPACE}/hipster-app:${service}-${{ inputs.image_version }}"
-
             echo "🏗️ Building $IMAGE_TAG from $DOCKERFILE"
             docker build -t $IMAGE_TAG -f $DOCKERFILE $CONTEXT
             echo "📤 Pushing $IMAGE_TAG"
             docker push $IMAGE_TAG
           done
-      
-      - name: Write deploy flag
-        run: echo "${{ inputs.image_version }}" > deploy.flag
 
-      - name: Upload Deploy Trigger Artifact
+      - name: Create metadata.json artifact
+        run: |
+          echo '{ "service": "${{ inputs.service }}", "image_tag": "${{ inputs.image_version }}" }' > metadata.json
+
+      - name: Upload deployment metadata
         uses: actions/upload-artifact@v4
         with:
-            name: deploy-trigger
-            path: deploy.flag
-
+          name: deployment-metadata
+          path: metadata.json
