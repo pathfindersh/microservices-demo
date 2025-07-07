@@ -1,10 +1,20 @@
-name: Build & Push All Services
+# .github/workflows/docker-build.yml
+
+name: Docker Build & Push
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
-      IMAGE_VERSION:
-        description: 'Image version (e.g. v0.8.0)'
+      image_version:
+        required: true
+        type: string
+      service:
+        required: true
+        type: string
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
         required: true
 
 jobs:
