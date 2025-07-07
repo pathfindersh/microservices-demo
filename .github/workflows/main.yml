@@ -23,6 +23,7 @@ jobs:
       service: ${{ github.event.inputs.service }}
 
   build_and_push:
+    if: ${{always()}}
     needs: unit_tests
     uses: ./.github/workflows/docker-build.yml
     with:
