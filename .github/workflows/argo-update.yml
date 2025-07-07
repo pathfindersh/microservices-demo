@@ -2,6 +2,13 @@ name: Github workflow with ArgoCD
 
 on:
   workflow_call:
+    inputs:
+      service:
+        required: true
+        type: string
+      image_tag:
+        required: true
+        type: string
     secrets:
       gh_pat:
         required: true
@@ -11,27 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_PAT: ${{ secrets.gh_pat }}
+      SERVICE: ${{ inputs.service }}
+      IMAGE_TAG: ${{ inputs.image_tag }}
+
     steps:
       - name: Checkout using Personal Access Token
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.gh_pat }}
-
-      - name: Download deployment metadata artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: deployment-metadata
-          path: ./artifact
-
-      - name: Read deployment metadata
-        id: metadata
-        run: |
-          echo "🔽 Reading deployment metadata..."
-          cat ./artifact/metadata.json
-          SERVICE=$(jq -r '.service' ./artifact/metadata.json)
-          IMAGE_TAG=$(jq -r '.image_tag' ./artifact/metadata.json)
-          echo "SERVICE=$SERVICE" >> $GITHUB_ENV
-          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
       - name: Update Image Tag in Helm values.yaml
         run: |

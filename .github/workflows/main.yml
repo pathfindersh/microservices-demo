@@ -37,5 +37,8 @@ jobs:
     if: ${{ always() }}
     needs: build_and_push
     uses: ./.github/workflows/argo-update.yml
+    with:
+      service: ${{ github.event.inputs.service }}
+      image_tag: ${{ github.event.inputs.image_version }}
     secrets:
       gh_pat: ${{ secrets.GH_PAT }}
