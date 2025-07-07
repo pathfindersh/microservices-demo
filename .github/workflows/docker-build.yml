@@ -52,4 +52,13 @@ jobs:
             echo "📤 Pushing $IMAGE_TAG"
             docker push $IMAGE_TAG
           done
+      
+      - name: Write deploy flag
+        run: echo "${{ inputs.image_version }}" > deploy.flag
+
+      - name: Upload Deploy Trigger Artifact
+        uses: actions/upload-artifact@v4
+        with:
+            name: deploy-trigger
+            path: deploy.flag
 

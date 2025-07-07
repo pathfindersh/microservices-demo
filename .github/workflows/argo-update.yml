@@ -1,44 +1,55 @@
-name: Github workflow with ArgoCD . ## This workflow updates the image tag in Kubernetes manifests and pushes changes to the repository.
+name: Github workflow with ArgoCD
+
 on:
   workflow_call:
-    inputs:
-      service:
-        required: true
-        type: string
-      image_tag:
-        required: true
-        type: string
     secrets:
       gh_pat:
         required: true
+
 jobs:
   update-manifest-files:
     runs-on: ubuntu-latest
     env:
-      GH_PAT: ${{ secrets.GH_PAT }}
+      GH_PAT: ${{ secrets.gh_pat }}
     steps:
-    - name: Checkout using Personal Access Token
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GH_PAT }}  # 🔥 This is critical!
-    - name: Update Image Tag
-      run: |
-        file="hipster/helm-chart/values.yaml"
-        if [ ! -f "$file" ]; then
-          echo "❌ File not found: $file"
-          exit 1
-        fi
-        echo "🔄 Updating $file for ${{ inputs.service }}..."
-        sed -i "s|\(.*${{ inputs.service }}.*tag:\).*|\1 \"${{ inputs.image_tag }}\"|" "$file"
-        echo "✅ Updated image tag in $file"
-    - name: Commit and Push Changes
-      run: |
-        git remote -v
-        git branch
-        echo "GH_PAT is set: ${GH_PAT}"
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}
-        git add .
-        git commit -m "✅ Update adservice to v0.8.0" || echo "Nothing to commit"
-        git push origin HEAD:main
+      - name: Checkout using Personal Access Token
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.gh_pat }}
+
+      - name: Download deployment metadata artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-metadata
+          path: ./artifact
+
+      - name: Read deployment metadata
+        id: metadata
+        run: |
+          echo "🔽 Reading deployment metadata..."
+          cat ./artifact/metadata.json
+          SERVICE=$(jq -r '.service' ./artifact/metadata.json)
+          IMAGE_TAG=$(jq -r '.image_tag' ./artifact/metadata.json)
+
+          echo "SERVICE=$SERVICE" >> $GITHUB_ENV
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+
+      - name: Update Image Tag in Helm values.yaml
+        run: |
+          file="hipster/helm-chart/values.yaml"
+          if [ ! -f "$file" ]; then
+            echo "❌ File not found: $file"
+            exit 1
+          fi
+          echo "🔄 Updating $file for $SERVICE..."
+          sed -i "s|\(.*${SERVICE}.*tag:\).*|\1 \"${IMAGE_TAG}\"|" "$file"
+          echo "✅ Updated image tag for $SERVICE to $IMAGE_TAG"
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}
+          git add .
+          git commit -m "✅ Update $SERVICE to $IMAGE_TAG" || echo "Nothing to commit"
+          git push origin HEAD:main
