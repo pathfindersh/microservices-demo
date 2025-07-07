@@ -30,6 +30,7 @@ jobs:
       image_version: ${{ github.event.inputs.image_version }}
       service: ${{ github.event.inputs.service }}
     secrets:
+      DOCKER_USERNAME: pathfindersh
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   argocd_deploy:
