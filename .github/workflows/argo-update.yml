@@ -1,4 +1,4 @@
-name: Github workflow with ArgoCD
+name: Github workflow with ArgoCD .
 
 on:
   workflow_call:
