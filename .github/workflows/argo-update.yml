@@ -22,33 +22,30 @@ jobs:
       IMAGE_TAG: ${{ inputs.image_tag }}
 
     steps:
-      - name: Checkout using Personal Access Token
+      - name: Checkout using PAT
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.gh_pat }}
 
-      - name: Update Image Tag in Helm values.yaml
+      - name: Install yq
+        run: |
+          sudo wget https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_linux_amd64 -O /usr/bin/yq
+          sudo chmod +x /usr/bin/yq
+
+      - name: Update image tag using yq
         run: |
           file="hipster/helm-chart/values.yaml"
-          if [ ! -f "$file" ]; then
-            echo "❌ File not found: $file"
-            exit 1
-          fi
-          echo "🔄 Updating $file for $SERVICE..."
+          SERVICE_KEY="$(echo $SERVICE | sed 's/^\(.\)/\U\1/')Service"
+          echo "🔄 Updating $SERVICE_KEY.image.tag → $IMAGE_TAG"
+          yq e ".$SERVICE_KEY.image.tag = \"$IMAGE_TAG\"" -i "$file"
+          echo "✅ Updated $SERVICE_KEY.image.tag to $IMAGE_TAG"
 
-          awk -v service="${SERVICE}" -v new_tag="${IMAGE_TAG}" '
-            $0 ~ service ":" { in_service=1 }
-            in_service && $0 ~ /tag:/ { sub(/tag:.*/, "tag: \"" new_tag "\""); in_service=0 }
-            { print }
-          ' "$file" > tmp.yaml && mv tmp.yaml "$file"
-
-          echo "✅ Updated image tag for $SERVICE to $IMAGE_TAG"
-
-      - name: Commit and Push Changes
+      - name: Commit and push changes
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}
           git add hipster/helm-chart/values.yaml
-          git commit -m "✅ Update $SERVICE to $IMAGE_TAG" || echo "Nothing to commit"
+          git commit -m "✅ Update $SERVICE image tag to $IMAGE_TAG" || echo "Nothing to commit"
           git push origin HEAD:main
+
