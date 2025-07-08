@@ -1,41 +1,31 @@
 images:
   repository: pathfindersh/hipster-app
   tag: ""
-
 serviceAccounts:
   create: true
   annotations: {}
   annotationsOnlyForCartservice: false
-
 networkPolicies:
   create: false
-
 sidecars:
   create: false
-
 authorizationPolicies:
   create: false
-
 opentelemetryCollector:
   create: false
   name: opentelemetrycollector
   projectId: "PROJECT_ID"
-
 googleCloudOperations:
   profiler: false
   tracing: false
   metrics: false
-
 seccompProfile:
   enable: false
   type: RuntimeDefault
-
 securityContext:
   enable: true
-
 imagePullSecret:
   dockerconfigjson: "eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJwYXRoZmluZGVyc2giLCJwYXNzd29yZCI6IlBhdGhARG9ja2VyIzEyMyIsImVtYWlsIjoiZGV2c2h1MkBnbWFpbC5jb20iLCJhdXRoIjoiY0dGMGFHWnBibVJsY25Ob09sQmhkR2hBUkc5amEyVnlJekV5TXc9PSJ9fX0="
-
 adService:
   create: true
   name: adservice
@@ -49,7 +39,6 @@ adService:
     limits:
       cpu: 300m
       memory: 300Mi
-
 cartService:
   create: true
   name: cartservice
@@ -63,7 +52,6 @@ cartService:
     limits:
       cpu: 300m
       memory: 256Mi
-
 checkoutService:
   create: true
   name: checkoutservice
@@ -77,7 +65,6 @@ checkoutService:
     limits:
       cpu: 200m
       memory: 128Mi
-
 currencyService:
   create: true
   name: currencyservice
@@ -91,7 +78,6 @@ currencyService:
     limits:
       cpu: 200m
       memory: 256Mi
-
 emailService:
   create: trueͥ旡ɍ
   name: emailservice
@@ -105,7 +91,6 @@ emailService:
     limits:
       cpu: 200m
       memory: 128Mi
-
 frontend:
   create: true
   name: frontend
@@ -132,7 +117,6 @@ frontend:
     limits:
       cpu: 200m
       memory: 128Mi
-
 loadGenerator:
   create: true
   name: loadgenerator
@@ -147,7 +131,6 @@ loadGenerator:
     limits:
       cpu: 500m
       memory: 512Mi
-
 paymentService:
   create: true
   name: paymentservice
@@ -161,7 +144,6 @@ paymentService:
     limits:
       cpu: 200m
       memory: 256Mi
-
 productCatalogService:
   create: true
   name: productcatalogservice
@@ -176,7 +158,6 @@ productCatalogService:
     limits:
       cpu: 200m
       memory: 128Mi
-
 recommendationService:
   create: true
   name: recommendationservice
@@ -190,7 +171,6 @@ recommendationService:
     limits:
       cpu: 200m
       memory: 450Mi
-
 shippingService:
   create: true
   name: shippingservice
@@ -204,7 +184,6 @@ shippingService:
     limits:
       cpu: 200m
       memory: 128Mi
-
 cartDatabase:
   type: redis
   connectionString: "redis-cart:6379"
@@ -218,8 +197,9 @@ cartDatabase:
     endpointAddress: ""
     endpointPort: ""
     certificate: ""
-
 shoppingAssistantService:
   create: false
   name: shoppingassistantservice
-
+AdserviceService:
+  image:
+    tag: 0.8.1
