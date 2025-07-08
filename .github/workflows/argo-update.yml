@@ -29,16 +29,33 @@ jobs:
 
       - name: Install yq
         run: |
-          sudo wget https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_linux_amd64 -O /usr/bin/yq
+          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
           sudo chmod +x /usr/bin/yq
+          yq --version
 
-      - name: Update image tag using yq
+      - name: Show Original values.yaml
+        run: |
+          echo "📄 Original:"
+          cat hipster/helm-chart/values.yaml
+
+      - name: Map service name and patch image tag
         run: |
           file="hipster/helm-chart/values.yaml"
-          SERVICE_KEY="$(echo $SERVICE | sed 's/^\(.\)/\U\1/')Service"
-          echo "🔄 Updating $SERVICE_KEY.image.tag → $IMAGE_TAG"
-          yq e ".$SERVICE_KEY.image.tag = \"$IMAGE_TAG\"" -i "$file"
-          echo "✅ Updated $SERVICE_KEY.image.tag to $IMAGE_TAG"
+          if [ ! -f "$file" ]; then
+            echo "❌ File not found: $file"
+            exit 1
+          fi
+
+          # Capitalize first letter and append 'Service'
+          YAML_KEY="$(echo $SERVICE | sed 's/^\(.\)/\U\1/')Service"
+
+          echo "🔄 Updating key: $YAML_KEY → tag: $IMAGE_TAG"
+
+          # Patch the tag using yq
+          yq e ".$YAML_KEY.image.tag = \"$IMAGE_TAG\"" -i "$file"
+
+          echo "✅ After update:"
+          grep -A 3 "$YAML_KEY:" "$file" || echo "❌ Key not found"
 
       - name: Commit and push changes
         run: |
@@ -46,6 +63,5 @@ jobs:
           git config --global user.email "actions@github.com"
           git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}
           git add hipster/helm-chart/values.yaml
-          git commit -m "✅ Update $SERVICE image tag to $IMAGE_TAG" || echo "Nothing to commit"
+          git commit -m "✅ Update $SERVICE image tag to $IMAGE_TAG" || echo "⚠️ Nothing to commit"
           git push origin HEAD:main
-
