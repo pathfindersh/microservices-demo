@@ -27,18 +27,7 @@ jobs:
         with:
           token: ${{ secrets.gh_pat }}
 
-      - name: Install yq
-        run: |
-          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
-          sudo chmod +x /usr/bin/yq
-          yq --version
-
-      - name: Show Original values.yaml
-        run: |
-          echo "📄 Original:"
-          cat hipster/helm-chart/values.yaml
-
-      - name: Map service name and patch image tag
+      - name: Patch values.yaml image tag manually
         run: |
           file="hipster/helm-chart/values.yaml"
           if [ ! -f "$file" ]; then
@@ -46,22 +35,25 @@ jobs:
             exit 1
           fi
 
-          # Capitalize first letter and append 'Service'
-          YAML_KEY="$(echo $SERVICE | sed 's/^\(.\)/\U\1/')Service"
+          service_key="$(echo "$SERVICE" | sed -E 's/^(.)/\U\1/')Service"
+          echo "🔍 Searching YAML block for: $service_key"
 
-          echo "🔄 Updating key: $YAML_KEY → tag: $IMAGE_TAG"
+          echo "🧾 BEFORE:"
+          awk "/^$service_key:/,/^[a-zA-Z0-9]+Service:/" "$file"
 
-          # Patch the tag using yq
-          yq e ".$YAML_KEY.image.tag = \"$IMAGE_TAG\"" -i "$file"
+          sed -i "/^$service_key:/,/^[a-zA-Z0-9]\+Service:/ {
+            s/^\(\s*tag:\s*\).*$/\1$IMAGE_TAG/
+          }" "$file"
 
-          echo "✅ After update:"
-          grep -A 3 "$YAML_KEY:" "$file" || echo "❌ Key not found"
+          echo "✅ AFTER:"
+          awk "/^$service_key:/,/^[a-zA-Z0-9]+Service:/" "$file"
 
       - name: Commit and push changes
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}
+          git remote set-url origin https://x-access-token:${{ secrets.gh_pat }}@github.com/${{ github.repository }}
           git add hipster/helm-chart/values.yaml
-          git commit -m "✅ Update $SERVICE image tag to $IMAGE_TAG" || echo "⚠️ Nothing to commit"
+          git commit -m "🔄 Update $SERVICE image tag to $IMAGE_TAG" || echo "⚠️ Nothing to commit"
           git push origin HEAD:main
+
