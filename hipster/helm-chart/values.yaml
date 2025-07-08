@@ -202,4 +202,4 @@ shoppingAssistantService:
   name: shoppingassistantservice
 AdserviceService:
   image:
-    tag: 0.8.1
+    tag: v0.8.1
