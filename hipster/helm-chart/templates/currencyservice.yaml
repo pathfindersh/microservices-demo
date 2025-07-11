@@ -71,7 +71,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: {{ .Values.currencyService.image.repository }}:{{ .Values.currencyService.image.tag }}
+        image: {{ .Values.images.repository }}:{{ .Values.currencyService.name }}-{{ .Values.images.tag | default .Chart.AppVersion }}
         ports:
         - name: grpc
           containerPort: 7000

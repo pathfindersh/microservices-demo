@@ -1,37 +1,79 @@
-images:
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Default values for onlineboutique.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+###################################################################################################################
+# We are using docker repo pathfindersh/hipster-app for all the images.
+# If you  want to use a different repository, set the images.repository value.
+# If you want to use a different tag, set the images.tag value.
+# If you want to use a different repository and tag, set both values.
+# If you want to use the default repository and tag, leave both values empty.
+# If you want to use a different repository and tag for a specific service, set the service.<service_name>.image.repository and service.<service_name>.image.tag values.
+
+images: 
   repository: pathfindersh/hipster-app
+  # Overrides the image tag whose default is the chart appVersion.
   tag: ""
+
+## image pull secret here .
+imagePullSecret:
+  dockerconfigjson: "eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJwYXRoZmluZGVyc2giLCJwYXNzd29yZCI6IlBhdGhARG9ja2VyIzEyMyIsImVtYWlsIjoiZGV2c2h1MkBnbWFpbC5jb20iLCJhdXRoIjoiY0dGMGFHWnBibVJsY25Ob09sQmhkR2hBUkc5amEyVnlJekV5TXc9PSJ9fX0="
+
 serviceAccounts:
+  # Specifies whether service accounts should be created.
   create: true
+  # Annotations to add to the service accounts.
   annotations: {}
+  # Annotations to add only for the cartservice app. This allows to follow the least privilege principle where only cartservice needs to connect to external database for example via Workload Identity.
   annotationsOnlyForCartservice: false
+
 networkPolicies:
+  # Specifies if the NetworkPolicies are created or not. If true, one fine granular NetworkPolicy per app is created.
   create: false
+
 sidecars:
+  # Specifies if the Sidecars are created or not. If true, one fine granular Sidecar per app is created.
   create: false
+
 authorizationPolicies:
+  # Specifies if the AuthorizationPolicies are created or not. If true, one fine granular AuthorizationPolicy per app is created.
   create: false
+
 opentelemetryCollector:
   create: false
   name: opentelemetrycollector
+  # Specifies the project id for the otel collector. If set as "PROJECT_ID" (default value), an initContainer will automatically retrieve the project id value from the metadata server.
   projectId: "PROJECT_ID"
+
 googleCloudOperations:
   profiler: false
   tracing: false
   metrics: false
+
 seccompProfile:
   enable: false
   type: RuntimeDefault
+
 securityContext:
   enable: true
-imagePullSecret:
-  dockerconfigjson: "eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJwYXRoZmluZGVyc2giLCJwYXNzd29yZCI6IlBhdGhARG9ja2VyIzEyMyIsImVtYWlsIjoiZGV2c2h1MkBnbWFpbC5jb20iLCJhdXRoIjoiY0dGMGFHWnBibVJsY25Ob09sQmhkR2hBUkc5amEyVnlJekV5TXc9PSJ9fX0="
+
 adService:
   create: true
   name: adservice
-  image:
-    repository: docker.io/pathfindersh/hipster-app
-    tag: adservice-v0.8.0
   resources:
     requests:
       cpu: 200m
@@ -39,12 +81,10 @@ adService:
     limits:
       cpu: 300m
       memory: 300Mi
+
 cartService:
   create: true
   name: cartservice
-  image:
-    repository: docker.io/pathfindersh/hipster-app
-    tag: cartservice-v0.8.0
   resources:
     requests:
       cpu: 200m
@@ -52,12 +92,10 @@ cartService:
     limits:
       cpu: 300m
       memory: 256Mi
+
 checkoutService:
   create: true
   name: checkoutservice
-  image:
-    repository: docker.io/pathfindersh/hipster-app
-    tag: checkoutservice-v0.8.0
   resources:
     requests:
       cpu: 100m
@@ -65,12 +103,10 @@ checkoutService:
     limits:
       cpu: 200m
       memory: 128Mi
+
 currencyService:
   create: true
   name: currencyservice
-  image:
-    repository: docker.io/pathfindersh/hipster-app
-    tag: currencyservice-v0.8.0
   resources:
     requests:
       cpu: 100m
@@ -78,12 +114,10 @@ currencyService:
     limits:
       cpu: 200m
       memory: 256Mi
+
 emailService:
-  create: trueͥ旡ɍ
+  create: true
   name: emailservice
-  image:
-    repository: docker.io/pathfindersh/hipster-app
-    tag: emailservice-v0.8.0
   resources:
     requests:
       cpu: 100m
@@ -91,20 +125,19 @@ emailService:
     limits:
       cpu: 200m
       memory: 128Mi
+
 frontend:
   create: true
   name: frontend
-  image:
-    repository: docker.io/pathfindersh/hipster-app
-    tag: frontend-v0.8.0
   externalService: true
   cymbalBranding: false
+  # One of: local, gcp, aws, azure, onprem, alibaba. When not set, defaults to "local" unless running in GKE, otherwise auto-sets to gcp.
   platform: local
   singleSharedSession: false
   virtualService:
     create: false
     hosts:
-      - "*"
+    - "*"
     gateway:
       name: asm-ingressgateway
       namespace: asm-ingress
@@ -117,12 +150,10 @@ frontend:
     limits:
       cpu: 200m
       memory: 128Mi
+
 loadGenerator:
   create: true
   name: loadgenerator
-  image:
-    repository: docker.io/pathfindersh/hipster-app
-    tag: loadgenerator-v0.8.0
   checkFrontendInitContainer: true
   resources:
     requests:
@@ -131,12 +162,10 @@ loadGenerator:
     limits:
       cpu: 500m
       memory: 512Mi
+
 paymentService:
   create: true
   name: paymentservice
-  image:
-    repository: docker.io/pathfindersh/hipster-app
-    tag: paymentservice-v0.8.0
   resources:
     requests:
       cpu: 100m
@@ -144,12 +173,11 @@ paymentService:
     limits:
       cpu: 200m
       memory: 256Mi
+
 productCatalogService:
   create: true
   name: productcatalogservice
-  image:
-    repository: docker.io/pathfindersh/hipster-app
-    tag: productcatalogservice-v0.8.0
+  # Specifies an extra latency to any request on productcatalogservice, by default no extra latency.
   extraLatency: ""
   resources:
     requests:
@@ -158,12 +186,10 @@ productCatalogService:
     limits:
       cpu: 200m
       memory: 128Mi
+
 recommendationService:
   create: true
   name: recommendationservice
-  image:
-    repository: docker.io/pathfindersh/hipster-app
-    tag: recommendationservice-v0.8.0
   resources:
     requests:
       cpu: 100m
@@ -171,12 +197,10 @@ recommendationService:
     limits:
       cpu: 200m
       memory: 450Mi
+
 shippingService:
   create: true
   name: shippingservice
-  image:
-    repository: docker.io/pathfindersh/hipster-app
-    tag: shippingservice-v0.8.0
   resources:
     requests:
       cpu: 100m
@@ -184,12 +208,15 @@ shippingService:
     limits:
       cpu: 200m
       memory: 128Mi
+
 cartDatabase:
+  # Specifies the type of the cartservice's database, could be either redis or spanner.
   type: redis
   connectionString: "redis-cart:6379"
   inClusterRedis:
     create: true
     name: redis-cart
+    # Uses the public redis image from Docker Hub, otherwise will use the images.repository.
     publicRepository: true
   externalRedisTlsOrigination:
     enable: false
@@ -197,9 +224,9 @@ cartDatabase:
     endpointAddress: ""
     endpointPort: ""
     certificate: ""
+
+# @TODO: This service is not currently available in Helm.
+# https://github.com/GoogleCloudPlatform/microservices-demo/tree/main/kustomize/components/shopping-assistant
 shoppingAssistantService:
   create: false
   name: shoppingassistantservice
-AdserviceService:
-  image:
-    tag: v0.8.1
