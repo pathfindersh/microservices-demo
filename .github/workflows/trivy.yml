@@ -19,6 +19,9 @@ jobs:
       - name: Set image name
         id: image
         run: echo "IMAGE=pathfindersh/hipster-app:${{ inputs.service }}-${{ inputs.image_version }}" >> $GITHUB_ENV
+       
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "pathfindersh" --password-stdin
 
       - name: Install Trivy
         uses: aquasecurity/trivy-action@master
