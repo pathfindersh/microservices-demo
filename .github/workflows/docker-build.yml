@@ -50,12 +50,12 @@ jobs:
 
       - name: Build & Push all services (with skip if exists)
         run: |
-          for service in $(ls $BASE_PATH); do
-            echo "🔧 Processing $service"
+          SERVICES=$(find $BASE_PATH -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
 
+          for service in $SERVICES; do
             IMAGE_TAG="${DOCKER_NAMESPACE}/hipster-app:${service}-${IMAGE_VERSION}"
-
-            # Check if image already exists on Docker Hub
+            
+            echo "🔍 Checking if $IMAGE_TAG exists on Docker Hub..."
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
               https://hub.docker.com/v2/repositories/${DOCKER_NAMESPACE}/hipster-app/tags/${service}-${IMAGE_VERSION})
 
@@ -81,6 +81,5 @@ jobs:
               --file $DOCKERFILE \
               $CONTEXT \
               --push
-
 
           done
