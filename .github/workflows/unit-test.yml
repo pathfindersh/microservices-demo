@@ -27,6 +27,16 @@
         #- name: Run Tests
         #  run: ./gradlew test
 
+        - name: Cache Gradle packages
+          uses: actions/cache@v4
+          with:
+            path: |
+              ~/.gradle/caches
+              ~/.gradle/wrapper
+            key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+            restore-keys: |
+              gradle-${{ runner.os }}-
+
         # ✅ This ignores test failure, so pipeline continues
         - name: Run Tests (Continue on Failure)
           run: ./gradlew test || true
