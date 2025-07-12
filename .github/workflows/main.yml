@@ -22,20 +22,20 @@ jobs:
     with:
       service: ${{ github.event.inputs.service }}
 
-  # build_and_push:
-  #   if: ${{always()}}
-  #   needs: unit_tests
-  #   uses: ./.github/workflows/docker-build.yml
-  #   with:
-  #     image_version: ${{ github.event.inputs.image_version }}
-  #     service: ${{ github.event.inputs.service }}
-  #   secrets:
-  #     DOCKER_USERNAME: pathfindersh
-  #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  build_and_push:
+    if: ${{always()}}
+    needs: unit_tests
+    uses: ./.github/workflows/docker-build.yml
+    with:
+      image_version: ${{ github.event.inputs.image_version }}
+      service: ${{ github.event.inputs.service }}
+    secrets:
+      DOCKER_USERNAME: pathfindersh
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   trivy_scan:
     if: ${{ always() }}
-    needs: unit_tests
+    needs: build_and_push
     uses: ./.github/workflows/trivy.yml
     with:
       service: ${{ github.event.inputs.service }}

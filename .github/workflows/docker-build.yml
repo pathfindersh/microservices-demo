@@ -1,14 +1,9 @@
-# .github/workflows/docker-build.yml
-
-name: Docker Build & Push
+name: Docker Build & Push (Matrix)
 
 on:
   workflow_call:
     inputs:
       image_version:
-        required: true
-        type: string
-      service:
         required: true
         type: string
     secrets:
@@ -18,16 +13,31 @@ on:
         required: true
 
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
+  build-push:
+    strategy:
+      matrix:
+        service:
+          - adservice
+          - cartservice
+          - checkoutservice
+          - currencyservice
+          - emailservice
+          - frontend
+          - loadgenerator
+          - paymentservice
+          - productcatalogservice
+          - recommendationservice
+          - shippingservice
 
+    runs-on: ubuntu-latest
     env:
       DOCKER_NAMESPACE: pathfindersh
       BASE_PATH: ./hipster/src
-      IMAGE_VERSION: ${{ github.event.inputs.IMAGE_VERSION }}
+      IMAGE_VERSION: ${{ inputs.image_version }}
+      SERVICE: ${{ matrix.service }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout source code
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
@@ -37,10 +47,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
-          key: buildx-${{ runner.os }}-${{ github.sha }}
+          key: buildx-${{ runner.os }}-${{ matrix.service }}-${{ inputs.image_version }}
           restore-keys: |
-            buildx-${{ runner.os }}-
-
+            buildx-${{ runner.os }}-${{ matrix.service }}-
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -48,38 +57,36 @@ jobs:
           username: pathfindersh
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build & Push all services (with skip if exists)
+      - name: Check if image already exists
+        id: image_check
         run: |
-          SERVICES=$(find $BASE_PATH -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+          IMAGE_TAG="${DOCKER_NAMESPACE}/hipster-app:${SERVICE}-${IMAGE_VERSION}"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            https://hub.docker.com/v2/repositories/${DOCKER_NAMESPACE}/hipster-app/tags/${SERVICE}-${IMAGE_VERSION})
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
 
-          for service in $SERVICES; do
-            IMAGE_TAG="${DOCKER_NAMESPACE}/hipster-app:${service}-${IMAGE_VERSION}"
-            
-            echo "🔍 Checking if $IMAGE_TAG exists on Docker Hub..."
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-              https://hub.docker.com/v2/repositories/${DOCKER_NAMESPACE}/hipster-app/tags/${service}-${IMAGE_VERSION})
+      - name: Skip build if image exists
+        if: steps.image_check.outputs.status == '200'
+        run: echo "✅ Image already exists. Skipping build."
 
-            if [ "$STATUS" -eq 200 ]; then
-              echo "✅ Image $IMAGE_TAG already exists. Skipping build & push."
-              continue
-            fi
+      - name: Build and Push Docker image
+        if: steps.image_check.outputs.status != '200'
+        run: |
+          IMAGE_TAG="${DOCKER_NAMESPACE}/hipster-app:${SERVICE}-${IMAGE_VERSION}"
 
-            # Determine Dockerfile and context
-            if [ "$service" = "cartservice" ]; then
-              DOCKERFILE="$BASE_PATH/$service/src/Dockerfile"
-              CONTEXT="$BASE_PATH/$service/src"
-            else
-              DOCKERFILE="$BASE_PATH/$service/Dockerfile"
-              CONTEXT="$BASE_PATH/$service"
-            fi
+          if [ "$SERVICE" = "cartservice" ]; then
+            DOCKERFILE="$BASE_PATH/$SERVICE/src/Dockerfile"
+            CONTEXT="$BASE_PATH/$SERVICE/src"
+          else
+            DOCKERFILE="$BASE_PATH/$SERVICE/Dockerfile"
+            CONTEXT="$BASE_PATH/$SERVICE"
+          fi
 
-            echo "🏗️ Building $IMAGE_TAG using $DOCKERFILE"
-            docker buildx build \
-              --cache-from=type=local,src=/tmp/.buildx-cache \
-              --cache-to=type=local,dest=/tmp/.buildx-cache \
-              --tag $IMAGE_TAG \
-              --file $DOCKERFILE \
-              $CONTEXT \
-              --push
-
-          done
+          echo "🏗️ Building $IMAGE_TAG using $DOCKERFILE"
+          docker buildx build \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache \
+            --tag $IMAGE_TAG \
+            --file $DOCKERFILE \
+            $CONTEXT \
+            --push
