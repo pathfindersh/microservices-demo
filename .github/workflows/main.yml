@@ -34,6 +34,7 @@ jobs:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   trivy_scan:
+    if: ${{ always() }}
     needs: build_and_push
     uses: ./.github/workflows/trivy.yml
     with:
@@ -43,7 +44,7 @@ jobs:
 
   argocd_deploy:
     if: ${{ always() }}
-    needs: build_and_push
+    needs: trivy_scan
     uses: ./.github/workflows/argo-update.yml
     with:
       service: ${{ github.event.inputs.service }}
