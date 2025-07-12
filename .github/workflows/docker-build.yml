@@ -83,6 +83,4 @@ jobs:
               --push
 
 
-            echo "📤 Pushing $IMAGE_TAG"
-            docker push $IMAGE_TAG
           done
