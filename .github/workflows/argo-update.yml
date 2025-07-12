@@ -27,33 +27,34 @@ jobs:
         with:
           token: ${{ secrets.gh_pat }}
 
-      - name: Patch values.yaml image tag manually
+      - name: Update Chart.yaml version and appVersion from input
         run: |
-          file="hipster/helm-chart/values.yaml"
-          if [ ! -f "$file" ]; then
-            echo "❌ File not found: $file"
+          chart_file="hipster/helm-chart/Chart.yaml"
+          if [ ! -f "$chart_file" ]; then
+            echo "❌ Chart.yaml not found!"
             exit 1
           fi
 
-          service_key="$(echo "$SERVICE" | sed -E 's/^(.)/\U\1/')Service"
-          echo "🔍 Searching YAML block for: $service_key"
+          # Remove leading 'v' for version (Chart.yaml version field doesn't use 'v')
+          clean_version=$(echo "$IMAGE_TAG" | sed 's/^v//')
 
-          echo "🧾 BEFORE:"
-          awk "/^$service_key:/,/^[a-zA-Z0-9]+Service:/" "$file"
+          echo "🔄 Setting version: $clean_version"
+          echo "🔄 Setting appVersion: \"$IMAGE_TAG\""
 
-          sed -i "/^$service_key:/,/^[a-zA-Z0-9]\+Service:/ {
-            s/^\(\s*tag:\s*\).*$/\1$IMAGE_TAG/
-          }" "$file"
+          sed -i "s/^version:.*/version: $clean_version/" "$chart_file"
+          sed -i "s/^appVersion:.*/appVersion: \"$IMAGE_TAG\"/" "$chart_file"
 
-          echo "✅ AFTER:"
-          awk "/^$service_key:/,/^[a-zA-Z0-9]+Service:/" "$file"
+          echo "✅ Updated Chart.yaml:"
+          cat "$chart_file"
+
 
       - name: Commit and push changes
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git remote set-url origin https://x-access-token:${{ secrets.gh_pat }}@github.com/${{ github.repository }}
-          git add hipster/helm-chart/values.yaml
-          git commit -m "🔄 Update $SERVICE image tag to $IMAGE_TAG" || echo "⚠️ Nothing to commit"
+          git add hipster/helm-chart/Chart.yaml
+          git commit -m "🔄 Set version=$clean_version and appVersion=$IMAGE_TAG" || echo "⚠️ Nothing to commit"
           git push origin HEAD:main
+
 
