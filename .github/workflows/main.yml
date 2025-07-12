@@ -33,6 +33,14 @@ jobs:
       DOCKER_USERNAME: pathfindersh
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
+  trivy_scan:
+    needs: build_and_push
+    uses: ./.github/workflows/trivy.yml
+    with:
+      service: ${{ github.event.inputs.service }}
+      image_version: ${{ github.event.inputs.image_version }}
+
+
   argocd_deploy:
     if: ${{ always() }}
     needs: build_and_push

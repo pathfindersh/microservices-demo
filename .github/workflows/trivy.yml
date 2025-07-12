@@ -1,0 +1,40 @@
+name: Trivy Image Vulnerability Scan
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        required: true
+        type: string
+      image_version:
+        required: true
+        type: string
+
+jobs:
+  trivy-scan:
+    name: Run Trivy Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set image name
+        id: image
+        run: echo "IMAGE=pathfindersh/hipster-app:${{ inputs.service }}-${{ inputs.image_version }}" >> $GITHUB_ENV
+
+      - name: Install Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: image
+          image-ref: ${{ env.IMAGE }}
+          format: table
+          exit-code: 0  # So the pipeline doesn't fail on vuln findings (optional)
+          ignore-unfixed: true
+
+      - name: Save Trivy report
+        run: |
+          trivy image --format json --output trivy-${{ inputs.service }}.json $IMAGE
+
+      - name: Upload Trivy report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-${{ inputs.service }}
+          path: trivy-${{ inputs.service }}.json
