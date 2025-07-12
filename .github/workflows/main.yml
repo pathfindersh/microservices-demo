@@ -34,7 +34,7 @@ jobs:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   argocd_deploy:
-    #if: ${{ always() }}
+    if: ${{ always() }}
     needs: build_and_push
     uses: ./.github/workflows/argo-update.yml
     with:
