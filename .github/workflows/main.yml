@@ -37,7 +37,6 @@ jobs:
     needs: build_and_push
     uses: ./.github/workflows/trivy.yml
     with:
-      service: ${{ github.event.inputs.service }}
       image_version: ${{ github.event.inputs.image_version }}
     secrets:
       DOCKER_USERNAME: pathfindersh
