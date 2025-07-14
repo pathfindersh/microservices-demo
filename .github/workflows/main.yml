@@ -70,6 +70,9 @@ jobs:
     with:
       image_name: pathfindersh/hipster-app
       image_tag: ${{ matrix.service }}-${{ github.event.inputs.image_version }}
+    secrets:
+      DOCKER_USERNAME: pathfindersh
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}  
 
   argocd_deploy:
     if: ${{ always() }}
