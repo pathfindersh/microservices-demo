@@ -13,8 +13,8 @@ on:
 jobs:
 
   gitleaks_scan:
-  uses: ./.github/workflows/gitleaks.yml
-
+    uses: ./.github/workflows/gitleaks.yml
+  
   polaris_scan:
     needs: gitleaks_scan
     uses: ./.github/workflows/polaris.yml
