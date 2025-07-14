@@ -13,7 +13,7 @@
 -}}
 
 {{- range $name, $svc := $services }}
-{{- if and $svc.create $svc.hpa.enabled }}
+{{- if and $svc.create (hasKey $svc "hpa") (and $svc.hpa.enabled (hasKey $svc.hpa "cpu")) }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -24,15 +24,15 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ $svc.name }}
-  minReplicas: {{ $svc.hpa.minReplicas }}
-  maxReplicas: {{ $svc.hpa.maxReplicas }}
+  minReplicas: {{ default 1 $svc.hpa.minReplicas }}
+  maxReplicas: {{ default 5 $svc.hpa.maxReplicas }}
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ $svc.hpa.cpu.targetAverageUtilization }}
+          averageUtilization: {{ default 60 $svc.hpa.cpu.targetAverageUtilization }}
 ---
 {{- end }}
 {{- end }}
