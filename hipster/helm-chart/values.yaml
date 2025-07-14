@@ -81,6 +81,11 @@ adService:
     limits:
       cpu: 300m
       memory: 300Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
 
 cartService:
   create: true
@@ -92,6 +97,11 @@ cartService:
     limits:
       cpu: 300m
       memory: 256Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
 
 checkoutService:
   create: true
@@ -103,6 +113,11 @@ checkoutService:
     limits:
       cpu: 200m
       memory: 128Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
 
 currencyService:
   create: true
@@ -114,6 +129,11 @@ currencyService:
     limits:
       cpu: 200m
       memory: 256Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
 
 emailService:
   create: true
@@ -125,6 +145,11 @@ emailService:
     limits:
       cpu: 200m
       memory: 128Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
 
 frontend:
   create: true
@@ -150,6 +175,11 @@ frontend:
     limits:
       cpu: 200m
       memory: 128Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
 
 loadGenerator:
   create: true
@@ -162,6 +192,11 @@ loadGenerator:
     limits:
       cpu: 500m
       memory: 512Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
 
 paymentService:
   create: true
@@ -173,6 +208,11 @@ paymentService:
     limits:
       cpu: 200m
       memory: 256Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
 
 productCatalogService:
   create: true
@@ -186,6 +226,11 @@ productCatalogService:
     limits:
       cpu: 200m
       memory: 128Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
 
 recommendationService:
   create: true
@@ -197,6 +242,11 @@ recommendationService:
     limits:
       cpu: 200m
       memory: 450Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
 
 shippingService:
   create: true
@@ -208,6 +258,11 @@ shippingService:
     limits:
       cpu: 200m
       memory: 128Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
 
 cartDatabase:
   # Specifies the type of the cartservice's database, could be either redis or spanner.
