@@ -19,9 +19,11 @@ jobs:
         with:
           token: ${{ secrets.gh_pat }}
 
-      - name: Download Gitleaks Binary
+      - name: Download & Install Gitleaks
         run: |
-          curl -sSL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64 -o gitleaks
+          GITLEAKS_VERSION=$(curl -s https://api.github.com/repos/gitleaks/gitleaks/releases/latest | grep tag_name | cut -d '"' -f 4)
+          curl -sSL -o gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION#v}_linux_x64.tar.gz
+          tar -xzf gitleaks.tar.gz gitleaks
           chmod +x gitleaks
           sudo mv gitleaks /usr/local/bin/
 
@@ -33,11 +35,11 @@ jobs:
             --report-path gitleaks-report.json \
             --no-git
 
-      - name: Print Gitleaks Findings
+      - name: Show Gitleaks Report
         if: always()
         run: |
-          echo "📄 Gitleaks Report Contents:"
-          cat gitleaks-report.json || echo "⚠️ Report file not found"
+          echo "📄 Gitleaks Report:"
+          cat gitleaks-report.json || echo "⚠️ Report missing"
 
       - name: Upload Gitleaks Report
         if: always()
