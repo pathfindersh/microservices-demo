@@ -49,7 +49,7 @@ jobs:
       DOCKER_USERNAME: pathfindersh
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-  dependency_scan:
+  oss_dependency_scan:
     if: ${{ always() }}
     needs: trivy_scan
     strategy:
@@ -73,7 +73,7 @@ jobs:
 
   argocd_deploy:
     if: ${{ always() }}
-    needs: trivy_scan
+    needs: oss_dependency_scan
     uses: ./.github/workflows/argo-update.yml
     with:
       service: ${{ github.event.inputs.service }}
