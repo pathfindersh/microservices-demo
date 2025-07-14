@@ -4,6 +4,9 @@ name: Gitleaks Secret Scan
 
 on:
   workflow_call:
+    secrets:
+      gh_pat:
+        required: true
 
 jobs:
   gitleaks-scan:
