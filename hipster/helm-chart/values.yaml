@@ -83,9 +83,10 @@ adService:
       memory: 300Mi
   hpa:
     enabled: true
-    minReplicas: 2
-    maxReplicas: 6
-    targetCPUUtilizationPercentage: 70
+    minReplicas: 1
+    maxReplicas: 5
+    cpu:
+      targetAverageUtilization: 70
 
 cartService:
   create: true
@@ -99,9 +100,10 @@ cartService:
       memory: 256Mi
   hpa:
     enabled: true
-    minReplicas: 2
-    maxReplicas: 6
-    targetCPUUtilizationPercentage: 70
+    minReplicas: 1
+    maxReplicas: 5
+    cpu:
+      targetAverageUtilization: 70
 
 checkoutService:
   create: true
@@ -115,9 +117,10 @@ checkoutService:
       memory: 128Mi
   hpa:
     enabled: true
-    minReplicas: 2
-    maxReplicas: 6
-    targetCPUUtilizationPercentage: 70
+    minReplicas: 1
+    maxReplicas: 5
+    cpu:
+      targetAverageUtilization: 70
 
 currencyService:
   create: true
@@ -131,9 +134,10 @@ currencyService:
       memory: 256Mi
   hpa:
     enabled: true
-    minReplicas: 2
-    maxReplicas: 6
-    targetCPUUtilizationPercentage: 70
+    minReplicas: 1
+    maxReplicas: 5
+    cpu:
+      targetAverageUtilization: 70
 
 emailService:
   create: true
@@ -147,9 +151,10 @@ emailService:
       memory: 128Mi
   hpa:
     enabled: true
-    minReplicas: 2
-    maxReplicas: 6
-    targetCPUUtilizationPercentage: 70
+    minReplicas: 1
+    maxReplicas: 5
+    cpu:
+      targetAverageUtilization: 70
 
 frontend:
   create: true
@@ -177,9 +182,10 @@ frontend:
       memory: 128Mi
   hpa:
     enabled: true
-    minReplicas: 2
-    maxReplicas: 6
-    targetCPUUtilizationPercentage: 70
+    minReplicas: 1
+    maxReplicas: 5
+    cpu:
+      targetAverageUtilization: 70
 
 loadGenerator:
   create: true
@@ -194,9 +200,10 @@ loadGenerator:
       memory: 512Mi
   hpa:
     enabled: true
-    minReplicas: 2
-    maxReplicas: 6
-    targetCPUUtilizationPercentage: 70
+    minReplicas: 1
+    maxReplicas: 5
+    cpu:
+      targetAverageUtilization: 70
 
 paymentService:
   create: true
@@ -210,9 +217,10 @@ paymentService:
       memory: 256Mi
   hpa:
     enabled: true
-    minReplicas: 2
-    maxReplicas: 6
-    targetCPUUtilizationPercentage: 70
+    minReplicas: 1
+    maxReplicas: 5
+    cpu:
+      targetAverageUtilization: 70
 
 productCatalogService:
   create: true
@@ -228,9 +236,10 @@ productCatalogService:
       memory: 128Mi
   hpa:
     enabled: true
-    minReplicas: 2
-    maxReplicas: 6
-    targetCPUUtilizationPercentage: 70
+    minReplicas: 1
+    maxReplicas: 5
+    cpu:
+      targetAverageUtilization: 70
 
 recommendationService:
   create: true
@@ -244,9 +253,10 @@ recommendationService:
       memory: 450Mi
   hpa:
     enabled: true
-    minReplicas: 2
-    maxReplicas: 6
-    targetCPUUtilizationPercentage: 70
+    minReplicas: 1
+    maxReplicas: 5
+    cpu:
+      targetAverageUtilization: 70
 
 shippingService:
   create: true
@@ -260,9 +270,10 @@ shippingService:
       memory: 128Mi
   hpa:
     enabled: true
-    minReplicas: 2
-    maxReplicas: 6
-    targetCPUUtilizationPercentage: 70
+    minReplicas: 1
+    maxReplicas: 5
+    cpu:
+      targetAverageUtilization: 70
 
 cartDatabase:
   # Specifies the type of the cartservice's database, could be either redis or spanner.
