@@ -49,6 +49,27 @@ jobs:
       DOCKER_USERNAME: pathfindersh
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
+  dependency_scan:
+    if: ${{ always() }}
+    needs: trivy_scan
+    strategy:
+      matrix:
+        service:
+          - adservice
+          - cartservice
+          - checkoutservice
+          - currencyservice
+          - emailservice
+          - frontend
+          - loadgenerator
+          - paymentservice
+          - productcatalogservice
+          - recommendationservice
+          - shippingservice
+    uses: ./.github/workflows/oss-dependency-scan.yml
+    with:
+      image_name: pathfindersh/hipster-app
+      image_tag: ${{ matrix.service }}-${{ github.event.inputs.image_version }}
 
   argocd_deploy:
     if: ${{ always() }}
