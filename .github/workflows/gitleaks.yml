@@ -19,30 +19,12 @@ jobs:
         with:
           token: ${{ secrets.gh_pat }}
 
-      - name: Download & Install Gitleaks
-        run: |
-          GITLEAKS_VERSION=$(curl -s https://api.github.com/repos/gitleaks/gitleaks/releases/latest | grep tag_name | cut -d '"' -f 4)
-          curl -sSL -o gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION#v}_linux_x64.tar.gz
-          tar -xzf gitleaks.tar.gz gitleaks
-          chmod +x gitleaks
-          sudo mv gitleaks /usr/local/bin/
-
-      - name: Run Gitleaks (fail if secrets found)
-        run: |
-          gitleaks detect \
-            --source . \
-            --report-format json \
-            --report-path gitleaks-report.json \
-            --no-git
-
-      - name: Show Gitleaks Report
-        if: always()
-        run: |
-          echo "📄 Gitleaks Report:"
-          cat gitleaks-report.json || echo "⚠️ Report missing"
+      - name: Run Gitleaks Scan
+        uses: zricethezav/gitleaks-action@v2
+        with:
+          args: detect --source . --no-git --report-format json --report-path gitleaks-report.json
 
       - name: Upload Gitleaks Report
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: gitleaks-report
